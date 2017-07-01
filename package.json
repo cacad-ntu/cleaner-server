@@ -1,0 +1,19 @@
+{
+  "name": "cleaner-server",
+  "version": "1.0.0",
+  "description": "server side robot cleaner",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cacad-ntu/cleaner-server.git"
+  },
+  "author": "Team Pentium Inside",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cacad-ntu/cleaner-server/issues"
+  },
+  "homepage": "https://github.com/cacad-ntu/cleaner-server#readme"
+}
