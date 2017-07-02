@@ -4,8 +4,8 @@
   "description": "server side robot cleaner",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test",
-    "start": "npm start"
+    "test": "",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
