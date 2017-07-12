@@ -10,13 +10,25 @@ exports.turnLeft = function(direction) {
 
 
 exports.moveForward = function(direction, position) {
-    if(direction == constants.DIR_UP)
+    if (direction == constants.DIR_UP)
         position = [position[0] - 1, position[1]]
-    else if(direction == constants.DIR_RIGHT)
+    else if (direction == constants.DIR_RIGHT)
         position = [position[0], position[1] + 1]
-    else if(direction == constants.DIR_DOWN)
+    else if (direction == constants.DIR_DOWN)
         position = [position[0] + 1, position[1]]
-    else if(direction == constants.DIR_LEFT)
+    else if (direction == constants.DIR_LEFT)
         position = [position[0], position[1] - 1]
+    return position
+}
+
+exports.getLowerLeft = function(direction) {
+    if (direction == constants.DIR_UP)
+        position = [position[0] + 1, position[1] - 1]
+    else if (direction == constants.DIR_RIGHT)
+        position = [position[0] - 1, position[1] - 1]
+    else if (direction == constants.DIR_DOWN)
+        position = [position[0] - 1, position[1] + 1]
+    else if (direction == constants.DIR_LEFT)
+        position = [position[0] + 1, position[1] + 1]
     return position
 }
