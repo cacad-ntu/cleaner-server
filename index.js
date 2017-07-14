@@ -18,8 +18,8 @@ const Robot = require('./algo/robot.js')
 var ws = require("nodejs-websocket")
 
 
-clientHandler = function(conn) {
-  var data = {
+clientHandler = function(conn, data) {
+  var response = {
     "mazeMap": [
       [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
       [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
@@ -43,13 +43,20 @@ clientHandler = function(conn) {
       [2,2,2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
     ]
   }
-  conn.send(JSON.stringify(data));
+  conn.send(JSON.stringify(response));
 }
 
-piHandler = function(conn) {
-  
+piHandler = function(conn, sensors, counter) {
+  console.log("From Pi\n")
+  console.log(sensors)
+  console.log("\n")
+  var response  = {
+    // only for calibration
+    "action": counter
+  }
+  conn.send(JSON.stringify(response))
 }
-
+var counter = 0
 var server = ws.createServer(function (conn) {
   // -1: unexplored
   // 0: cleaned
@@ -67,12 +74,15 @@ var server = ws.createServer(function (conn) {
   console.log(robot.direction)
   robot.forward()
   conn.on("text", function (str) {
-    var type = JSON.parse(str).type
-    if (type == 0) {
-      clientHandler(conn)
+    console.log("Full:")
+    console.log(str)
+    var msg = JSON.parse(str)
+    if (msg.type == 0) {
+      clientHandler(conn, msg.data)
     }
-    else if (type == 1) {
-      piHandler(conn)
+    else if (msg.type == 1) {
+      piHandler(conn, msg.sensors, counter)
+      counter = (counter + 1) % 4
     }    
   })
 
