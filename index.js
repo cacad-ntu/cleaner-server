@@ -158,8 +158,8 @@ var server = ws.createServer(function (conn) {
       console.log("POSITION", robot.row, robot.column, robot.direction)
       if(newCounter == 0) {
         console.log("Reset map")
-        counter = 100
-        mazeMap = [[0, 0, 0, 0], [0, -1, -1, 0], [0, 3, 3, 0],[0, 3, 3, 0], [0, -1, -1, 0], [0, 0, 0, 0]]
+        // counter = 100
+        // mazeMap = [[0, 0, 0, 0], [0, -1, -1, 0], [0, 3, 3, 0],[0, 3, 3, 0], [0, -1, -1, 0], [0, 0, 0, 0]]
         prevMap = mazeMap.slice()
         for(i=0;i<6;++i) {
           for(j=0;j<4;++j) {

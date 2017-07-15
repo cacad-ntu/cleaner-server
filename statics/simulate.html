@@ -52,6 +52,8 @@
 		<h1 id = "col">3</h1>
 
 		<script>
+			ws = new WebSocket("ws://localhost:8080/echo");
+			limit = 0
 			var margin = 10;
 			var cellSize = 30
 			var row = 20
@@ -67,7 +69,7 @@
 			context.strokeStyle = "#757575";
 			var mazeMap = 0
 			var direction = 0
-			var ws = new WebSocket("ws://localhost:8080/echo");
+			// var ws = new WebSocket("ws://localhost:8080/echo");
             ws.onmessage = function (event){
             document.getElementById("result0").value = event.data;
         };
@@ -76,7 +78,7 @@
 			var steps = 0
 			ws.onopen = function() {
 				// Type 0 to establish connection, doing nothing
-				 ws.send(JSON.stringify({type: -1, row:6, column:4}));
+				//  ws.send(JSON.stringify({type: -1, row:6, column:4}));
 			};
 			ws.onmessage = function (evt) {
 				// update the map
@@ -134,7 +136,7 @@
 					}
 				}
                 
-                for (var k = 1;k <= 3; ++k) {
+                for (var k = 1;k <= limit; ++k) {
                     for (var i = 0; i < row; i++) {
                         for (var j = 0; j < col; j++) {
                             if (mazeMap[i][j] == 10 + k) {
@@ -165,48 +167,26 @@
 			}
 			// fillCells();
 			// drawGrids();
-			function submitData() {
+			function two() {
 				// type 1 to start the exploration
-				var timeLimit = document.getElementById("timeLimit").value;
-				var coverageLimit = document.getElementById("coverageLimit").value;
-				console.log(coverageLimit)
-								
-				ws.send(JSON.stringify({type: 1, time : timeLimit, coverageLimit : coverageLimit}));
+				console.log("Two")
+				ws.send(JSON.stringify({type: 10, row:6, column:4}));
+				limit = 2
+			}
+			function three() {
+				// type 1 to start the exploration
+				ws.send(JSON.stringify({type: 11, row:6, column:4}));
+				limit = 3
 			}
 		</script>
 		
 		<form>
 			<table style = "position:fixed; left:700px; top:10px;">
 				<tr>
-					<td><input type="text" id="timeLimit" placeholder="Enter Time Limit"></input></td>
+					<td><input type="button" value="Two Robots" onclick="two()"></input></td>
 				</tr>
 				<tr>
-					<td><input type="text" id="coverageLimit" placeholder="Enter Coverage Limit (percentage)"></input></td>
-				</tr>
-				<tr>
-					<td><input type="text" id="speed" placeholder="Enter Speed (steps/second)"></input></td>
-				</tr>
-				<tr>
-					<td><input type="button" value="start" onclick="submitData()"></input></td>
-				</tr>
-				<tr>
-					<td class = "title">Time Elapsed (seconds)</td>
-					<td id = "elapsedTime"></td>
-				</tr>
-				<tr>
-					<td class = "title">Speed (steps/second)</td>
-					<td id = "stepsPerSecond"></td>
-				</tr>
-				<tr>
-					<td class = "title">Number of Steps</td>
-					<td id = "steps"></td>
-				</tr>
-				<tr>
-					<td class = "title">Coverage percentage</td>
-					<td id = "coverage"></td>
-				</tr>
-				<tr>
-					<td colspan="2" id="status"></td>
+					<td><input type="button" value="Three Robots" onclick="three()"></input></td>
 				</tr>
 			</table>
 		</form>

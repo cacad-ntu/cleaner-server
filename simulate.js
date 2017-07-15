@@ -4,15 +4,19 @@ const Robot = require('./algo/robot.js')
 var utils = require('./utils/utils')
 var consts = require('./utils/constants')
 var mapper = require('./algo/colaborative.js')
+var mapper2 = require('./algo/colaborative2.js')
 
 var ws = require("nodejs-websocket")
 var prevAction = consts.FORWARD
+clients = 0
 var robot1 = 0
 var robot2 = 0
 var robot3 = 0
 var action1 = mapper.path1
 var action2 = mapper.path2
 var action3 = mapper.path3
+var move1 = mapper2.path1
+var move2 = mapper2.path2
 var mapRow = 0
 var mapCol = 0
 var counter = 0
@@ -53,25 +57,39 @@ checkPossibleCalibration = function() {
 }
 
 clientHandler = function(conn, direction) {
-  
-  if(action1.length > counter) {
-    mazeMap[robot1.row][robot1.column] = 0
-    robot1 = updateRobot(action1[counter], robot1)
-    mazeMap[robot1.row][robot1.column] = 11;
-  }
+  if(clients == 3) {
+    if(action1.length > counter) {
+        mazeMap[robot1.row][robot1.column] = 0
+        robot1 = updateRobot(action1[counter], robot1)
+        mazeMap[robot1.row][robot1.column] = 11;
+    }
 
-  if(action2.length > counter) {
-    mazeMap[robot2.row][robot2.column] = 0    
-    console.log(robot2.row, robot2.column, action2[counter])
-    robot2 = updateRobot(action2[counter], robot2)
-    console.log(robot2.row, robot2.column, action2[counter])
-    mazeMap[robot2.row][robot2.column] = 12;
-  }
+    if(action2.length > counter) {
+        mazeMap[robot2.row][robot2.column] = 0    
+        console.log(robot2.row, robot2.column, action2[counter])
+        robot2 = updateRobot(action2[counter], robot2)
+        console.log(robot2.row, robot2.column, action2[counter])
+        mazeMap[robot2.row][robot2.column] = 12;
+    }
 
-  if(action3.length > counter) {
-    mazeMap[robot3.row][robot3.column] = 0    
-    robot3 = updateRobot(action3[counter], robot3)
-    mazeMap[robot3.row][robot3.column] = 13;
+    if(action3.length > counter) {
+        mazeMap[robot3.row][robot3.column] = 0    
+        robot3 = updateRobot(action3[counter], robot3)
+        mazeMap[robot3.row][robot3.column] = 13;
+    }
+  }
+  else {
+      if(move1.length > counter) {
+        mazeMap[robot1.row][robot1.column] = 0
+        robot1 = updateRobot(move1[counter], robot1)
+        mazeMap[robot1.row][robot1.column] = 11;
+    }
+
+    if(move2.length > counter) {
+        mazeMap[robot2.row][robot2.column] = 0    
+        robot2 = updateRobot(move2[counter], robot2)
+        mazeMap[robot2.row][robot2.column] = 12;
+    }
   }
 
   
@@ -140,8 +158,24 @@ var server = ws.createServer(function (conn) {
   mazeMap = generateMap(20, 15, 19, 0, 0)
   conn.on("text", function (str) {
     var msg = JSON.parse(str)
+    if(msg.type == 10) {
+        console.log("LHLLJDLJASKLDJ")
+        clients = 2
+      sleep(100).then(() => {
+    // Do something after the sleep!
     
-    if (msg.type == -1) {
+    clientHandler(conn, msg.data)
+})
+    }
+    else if(msg.type == 11) {
+        clients = 3
+      sleep(100).then(() => {
+    // Do something after the sleep!
+    
+    clientHandler(conn, msg.data)
+})
+    }
+    else if (msg.type == -1) {
       mapRow = msg.row
       mapCol = msg.column
       var response = {
