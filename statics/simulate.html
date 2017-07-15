@@ -53,9 +53,9 @@
 
 		<script>
 			var margin = 10;
-			var cellSize = 80
-			var row = 6
-			var col = 4
+			var cellSize = 30
+			var row = 20
+			var col = 15
 			var width =  col * cellSize;
 			var height = row * cellSize;
 			
@@ -84,48 +84,8 @@
 				direction = JSON.parse(evt.data).direction;
                 fillCells()
                 drawGrids();
+				ws.send(JSON.stringify({type: -1, row:6, column:4}));
 				
-				// row_debug.innerHTML = JSON.parse(evt.data).row;
-				// col_debug.innerHTML = JSON.parse(evt.data).col;
-				// var status = JSON.parse(evt.data).status;
-				// if (status != "") {
-				// 	document.getElementById("status").innerHTML = JSON.parse(evt.data).status;
-				// }
-				// // message from server: type 0 means doing nothing, type 1 means render the display
-				// if(JSON.parse(evt.data).type == 2) {
-				// 	alert("No Path!")
-				// 	ws.close()
-				// }
-				// if(JSON.parse(evt.data).type == 3) {
-				// 	alert("Finished!")
-				// 	ws.close()
-				// }
-				// if(JSON.parse(evt.data).type == 1) {
-					// drawMap();
-				// 	if(startTime == 0) {
-				// 		var date = new Date();
-				// 		startTime = date.getTime();
-				// 	}
-				// 	var cur_d = new Date();
-				// 	var cur_ticks = cur_d.getTime();
-				// 	var elapsedTime = cur_ticks - startTime;
-				// 	var ms_passed = 0;
-				// 	var ms = 1000 / document.getElementById("speed").value;
-				// 	/* For Simulation */
-				// 		// while(ms_passed < ms) {
-				// 		// 	var d = new Date();  // Possible memory leak?
-				// 		// 	var ticks = d.getTime();
-				// 		// 	ms_passed = ticks - cur_ticks;
-				// 		// 	// d = null;  // Prevent memory leak?
-				// 		// }
-				// 	// type 2 to ask for rendering data
-				// 	ws.send(JSON.stringify({type: 2, elapsed_time: (elapsedTime/1000).toFixed(3), steps: steps}));
-				// 	steps++;
-				// 	document.getElementById("elapsedTime").innerHTML = (elapsedTime/1000).toFixed(3);
-				// 	document.getElementById("stepsPerSecond").innerHTML = 1000/ms;
-				// 	document.getElementById("steps").innerHTML = steps;
-				// 	document.getElementById("coverage").innerHTML = JSON.parse(evt.data).coverage.toFixed(3);;
-				// }
 			};
 			function drawGrids() {
 				// Column lines
@@ -145,7 +105,6 @@
 			
 			function fillCells() {
 				// console.log(mazeMap);
-                console.log("Inside")
                 if (mazeMap == 0)
                     return
 				for (var i = 0; i < row; i++) {
@@ -160,7 +119,7 @@
 						else if (mazeMap[i][j] == 1) {
 							context.fillStyle = "#757575";
 						}
-						else if (mazeMap[i][j] == 2) {
+						else if (mazeMap[i][j] > 10) {
 							context.fillStyle = "#0072ff";
 						}
 						else if (mazeMap[i][j] == 3) {
@@ -169,43 +128,43 @@
 						// else if (mazeMap[i][j] == 4) {
 						// 	context.fillStyle = "#ffae45";
 						// }
-						else if(mazeMap[i][j] == 5) {
-							context.fillStyle = "#000000";
-						}
 						
 						// else
-							context.fillRect(margin + cellSize*j, margin + cellSize*i, cellSize, cellSize);
+						context.fillRect(margin + cellSize*j, margin + cellSize*i, cellSize, cellSize);
 					}
 				}
-				for (var i = 0; i < row; i++) {
-					for (var j = 0; j < col; j++) {
-						if (mazeMap[i][j] == 2) {
-							context.fillStyle = "#ffae45";
-							if(direction == 0) {
-								--i;
-								context.fillRect(margin + cellSize*j, margin + cellSize*(i+1), cellSize, cellSize/5);
-							}
-							else if(direction == 1) {
-								++j
-								context.fillRect(margin + cellSize*j - cellSize/5, margin + cellSize*i, cellSize/5, cellSize);
-							}
-							else if(direction == 2) {
-								++i
-								context.fillRect(margin + cellSize*j, margin + cellSize*i - cellSize/5, cellSize, cellSize/5);
-							}
-							else {
-								--j
-								context.fillRect(margin + cellSize*(j+1), margin + cellSize*i, cellSize/5, cellSize);
-							}
-							i = j = 1000
-						}
-						else
-							continue
-					}
-				}
+                
+                for (var k = 1;k <= 3; ++k) {
+                    for (var i = 0; i < row; i++) {
+                        for (var j = 0; j < col; j++) {
+                            if (mazeMap[i][j] == 10 + k) {
+                                context.fillStyle = "#ffae45";
+                                if(direction[k-1] == 0) {
+                                    --i;
+                                    context.fillRect(margin + cellSize*j, margin + cellSize*(i+1), cellSize, cellSize/5);
+                                }
+                                else if(direction[k-1] == 1) {
+                                    ++j
+                                    context.fillRect(margin + cellSize*j - cellSize/5, margin + cellSize*i, cellSize/5, cellSize);
+                                }
+                                else if(direction[k-1] == 2) {
+                                    ++i
+                                    context.fillRect(margin + cellSize*j, margin + cellSize*i - cellSize/5, cellSize, cellSize/5);
+                                }
+                                else {
+                                    --j
+                                    context.fillRect(margin + cellSize*(j+1), margin + cellSize*i, cellSize/5, cellSize);
+                                }
+                                i = j = 1000
+                            }
+                            else
+                                continue
+                        }
+                    }
+                }
 			}
-			fillCells();
-			drawGrids();
+			// fillCells();
+			// drawGrids();
 			function submitData() {
 				// type 1 to start the exploration
 				var timeLimit = document.getElementById("timeLimit").value;

@@ -1,0 +1,17 @@
+<html>
+<body>
+
+<p>
+Result: <output type=text id="result0" value="" readonly></output>
+</p>
+
+<input type="text" onchange="connection.send(this.value); " />
+
+<script>
+    var connection = new WebSocket("ws://localhost:8080/echo");
+    connection.onmessage = function (event){
+    document.getElementById("result0").value = event.data;
+    };
+</script>
+</body>
+</html>
